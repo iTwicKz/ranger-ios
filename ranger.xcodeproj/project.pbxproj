@@ -12,7 +12,7 @@
 		16920CE41CCBFA7D00882C39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16920CE21CCBFA7D00882C39 /* Main.storyboard */; };
 		16920CE61CCBFA7D00882C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16920CE51CCBFA7D00882C39 /* Assets.xcassets */; };
 		16920CE91CCBFA7D00882C39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16920CE71CCBFA7D00882C39 /* LaunchScreen.storyboard */; };
-		16920CF11CCBFC7500882C39 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 16920CF01CCBFC7500882C39 /* .gitignore */; };
+		16920CF31CCC01E900882C39 /* RangerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16920CF21CCC01E900882C39 /* RangerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +23,7 @@
 		16920CE51CCBFA7D00882C39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16920CE81CCBFA7D00882C39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		16920CEA1CCBFA7D00882C39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		16920CF01CCBFC7500882C39 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		16920CF21CCC01E900882C39 /* RangerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +59,7 @@
 				16920CDE1CCBFA7D00882C39 /* AppDelegate.swift */,
 				16920CE01CCBFA7D00882C39 /* ViewController.swift */,
 				16920CE21CCBFA7D00882C39 /* Main.storyboard */,
-				16920CF01CCBFC7500882C39 /* .gitignore */,
+				16920CF21CCC01E900882C39 /* RangerViewController.swift */,
 				16920CE51CCBFA7D00882C39 /* Assets.xcassets */,
 				16920CE71CCBFA7D00882C39 /* LaunchScreen.storyboard */,
 				16920CEA1CCBFA7D00882C39 /* Info.plist */,
@@ -126,7 +126,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16920CF11CCBFC7500882C39 /* .gitignore in Resources */,
 				16920CE91CCBFA7D00882C39 /* LaunchScreen.storyboard in Resources */,
 				16920CE61CCBFA7D00882C39 /* Assets.xcassets in Resources */,
 				16920CE41CCBFA7D00882C39 /* Main.storyboard in Resources */,
@@ -140,6 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16920CF31CCC01E900882C39 /* RangerViewController.swift in Sources */,
 				16920CE11CCBFA7D00882C39 /* ViewController.swift in Sources */,
 				16920CDF1CCBFA7D00882C39 /* AppDelegate.swift in Sources */,
 			);
