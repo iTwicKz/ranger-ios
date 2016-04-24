@@ -45,5 +45,13 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Detect beacon</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key><true/>
+    </dict>
 </dict>
+
+
 </plist>
+
+
