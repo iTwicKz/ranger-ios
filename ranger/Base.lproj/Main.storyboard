@@ -67,13 +67,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HXv-Hb-xpd">
-                                <rect key="frame" x="265" y="179" width="110" height="56"/>
+                                <rect key="frame" x="265" y="179" width="157" height="56"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="anchor" translatesAutoresizingMaskIntoConstraints="NO" id="QeZ-wP-nmd">
                                         <rect key="frame" x="21" y="15" width="25" height="25"/>
+                                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -81,6 +82,8 @@
                     <navigationItem key="navigationItem" id="yD9-TW-YYM"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
+                        <outlet property="conditionIcon" destination="QeZ-wP-nmd" id="ACB-1L-NxN"/>
+                        <outlet property="conditionView" destination="HXv-Hb-xpd" id="tu0-6I-81X"/>
                         <outlet property="loopLabel" destination="wZ6-hI-7wH" id="1uE-Lk-Vds"/>
                         <outlet property="mapView" destination="Fos-XM-Ubm" id="Fbm-D8-wug"/>
                         <outlet property="markerNumberLabel" destination="YKL-C2-uUM" id="I44-fi-N5o"/>

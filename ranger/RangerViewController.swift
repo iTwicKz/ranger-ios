@@ -26,6 +26,8 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var summaryLabel: UILabel!
     @IBOutlet weak var parkLabel: UILabel!
     @IBOutlet weak var loopLabel: UILabel!
+    @IBOutlet weak var conditionView: UIView!
+    @IBOutlet weak var conditionIcon: UIImageView!
     
     var trailAttributes: NSDictionary?
     
@@ -53,6 +55,10 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
             
             locationManager.requestWhenInUseAuthorization()
         }
+        
+        conditionView.layer.cornerRadius = conditionView.frame.height / 2
+        conditionIcon.tintColor = UIColor.whiteColor()
+        
         
         locationManager.startRangingBeaconsInRegion(region)
 
@@ -185,6 +191,8 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
                                     //                        print(trailAttributes["TRAILNAME"]!)
                                     self.trailMarkers[markerIdentifier].trailDifficulty = self.trailAttributes!["DIFFICULTY"] as! String
                                     self.trailMarkers[markerIdentifier].parkName = self.trailAttributes!["PARKNAME"] as! String
+                                    self.trailMarkers[markerIdentifier].conditionColor = self.trailAttributes!["TRAILSURFACE"] as! String
+                                    print("LKNASD \(self.trailAttributes!["TRAILSURFACE"])")
                                     print(self.trailAttributes!["DIFFICULTY"])
                                     print(self.trailAttributes)
 
@@ -205,21 +213,11 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
                     task.resume()
                     print("FINISHED")
                 }
-//                print(trailAttributes)
-                
-                
-                
-//                updateIP(trailMarkers[markerIdentifier].trailName!, loopName: trailMarkers[markerIdentifier].loopName!)
-
-//                if trailAttributes != nil {
-//                }
                 
                 trailNameLabel.text =  trailMarkers[markerIdentifier].trailName
                 markerNumberLabel.text = String(trailMarkers[markerIdentifier].markerNumber!)
                 summaryLabel.text = trailMarkers[markerIdentifier].summary
-                
-
-                
+  
                 
                 sensorDataLabel.text = "Minor value \(closestBeacon!.minor.integerValue)"
             }
@@ -228,6 +226,17 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
             trailDifficulty.text = String(trailMarkers[markerIdentifier].trailDifficulty!)
             loopLabel.text = String(trailMarkers[markerIdentifier].loopName!)
             parkLabel.text = String(trailMarkers[markerIdentifier].parkName!)
+            print(trailMarkers[markerIdentifier].conditionColor!)
+            switch trailMarkers[markerIdentifier].conditionColor! {
+            case "Water":
+                conditionView.backgroundColor = UIColor(red:0.09, green:0.7, blue:0.43, alpha:1.0)
+                conditionIcon.image = UIImage(named: "anchor")
+            case "Unpaved":
+                conditionView.backgroundColor = UIColor.greenColor()
+                conditionIcon.image = UIImage(named: "leaf")
+            default:
+                print("ya")
+            }
 
 
         }
@@ -275,6 +284,7 @@ class TrailMarker {
     var markerNumber: Int?
     var trailDifficulty: String?
     var trailColor: UIColor?
+    var conditionColor: String?
     var summary: String?
     var markerLocation: CLLocation?
     
@@ -288,6 +298,7 @@ class TrailMarker {
         trailDifficulty = difficulty
         summary = summaryText
         trailColor = UIColor(red:0.09, green:0.7, blue:0.43, alpha:1.0)
+        conditionColor = "None"
         markerLocation = CLLocation(latitude: 30.434137, longitude: -84.290607)
     }
 }
