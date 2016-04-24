@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		162F62E21CCCBDE200A3CFE8 /* ActivitiesDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162F62E11CCCBDE200A3CFE8 /* ActivitiesDetailsViewController.swift */; };
+		162F62E41CCCC01200A3CFE8 /* ActivitiesDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162F62E31CCCC01200A3CFE8 /* ActivitiesDetailsTableViewCell.swift */; };
 		16920CDF1CCBFA7D00882C39 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16920CDE1CCBFA7D00882C39 /* AppDelegate.swift */; };
 		16920CE11CCBFA7D00882C39 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16920CE01CCBFA7D00882C39 /* ViewController.swift */; };
 		16920CE41CCBFA7D00882C39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16920CE21CCBFA7D00882C39 /* Main.storyboard */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		162F62E11CCCBDE200A3CFE8 /* ActivitiesDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitiesDetailsViewController.swift; sourceTree = "<group>"; };
+		162F62E31CCCC01200A3CFE8 /* ActivitiesDetailsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitiesDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		16920CDB1CCBFA7D00882C39 /* ranger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ranger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16920CDE1CCBFA7D00882C39 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16920CE01CCBFA7D00882C39 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -42,6 +46,7 @@
 		16920CD21CCBFA7D00882C39 = {
 			isa = PBXGroup;
 			children = (
+				162F62E31CCCC01200A3CFE8 /* ActivitiesDetailsTableViewCell.swift */,
 				16920CDD1CCBFA7D00882C39 /* ranger */,
 				16920CDC1CCBFA7D00882C39 /* Products */,
 			);
@@ -61,6 +66,7 @@
 				16920CDE1CCBFA7D00882C39 /* AppDelegate.swift */,
 				16920CE01CCBFA7D00882C39 /* ViewController.swift */,
 				16920CE21CCBFA7D00882C39 /* Main.storyboard */,
+				162F62E11CCCBDE200A3CFE8 /* ActivitiesDetailsViewController.swift */,
 				16920CF21CCC01E900882C39 /* RangerViewController.swift */,
 				16920CF41CCC95CC00882C39 /* ActivitiesCollectionViewCell.swift */,
 				16920CE51CCBFA7D00882C39 /* Assets.xcassets */,
@@ -143,7 +149,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				16920CF31CCC01E900882C39 /* RangerViewController.swift in Sources */,
+				162F62E21CCCBDE200A3CFE8 /* ActivitiesDetailsViewController.swift in Sources */,
 				16920CF51CCC95CC00882C39 /* ActivitiesCollectionViewCell.swift in Sources */,
+				162F62E41CCCC01200A3CFE8 /* ActivitiesDetailsTableViewCell.swift in Sources */,
 				16920CE11CCBFA7D00882C39 /* ViewController.swift in Sources */,
 				16920CDF1CCBFA7D00882C39 /* AppDelegate.swift in Sources */,
 			);
@@ -297,6 +305,7 @@
 				16920CEF1CCBFA7D00882C39 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

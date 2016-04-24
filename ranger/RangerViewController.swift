@@ -82,10 +82,12 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
         let trailString = trailName.stringByReplacingOccurrencesOfString(" ", withString: "+")
 
         if loopName != "" {
+            print("No null here")
             loopString = loopName.stringByReplacingOccurrencesOfString(" ", withString: "+")
             postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27%3B++Loopname%3D%\(loopString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
         } else {
-            loopString = ""
+            print("Went with the null")
+            loopString = "Main Path"
             postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
         }
         
@@ -170,10 +172,13 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                     let trailString = trailName.stringByReplacingOccurrencesOfString(" ", withString: "+")
                     
                     if loopName != "" {
+                        print("Loooopname \(loopName)")
                         loopString = loopName!.stringByReplacingOccurrencesOfString(" ", withString: "+")
                         postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27%3B++Loopname%3D%\(loopString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
                     } else {
-                        loopString = ""
+                        trailMarkers[markerIdentifier].loopName = "Main Path"
+                        print("JIJISJd")
+                        loopString = "Main Path"
                         postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
                     }
                     
@@ -319,15 +324,17 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
     }
     
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+      
+        var vc = segue.destinationViewController as! ActivitiesDetailsViewController
+        let passList = trailMarkers[marker].trailActivities
+        
+        vc.passedList = passList
+//        vc.userAnswer = chosenOption[sender!.tag].chosen!
+        
     }
-    */
 
 }
 
