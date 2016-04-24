@@ -37,6 +37,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
     
     var closestBeacon: CLBeacon?
     var activities: [String]?
+    var marker: Int = 0
     
     var trailMarkers: [TrailMarker] =
         [TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
@@ -146,6 +147,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                 print("Done")
             }
             var markerIdentifier = closestBeacon!.minor.integerValue - 1
+            marker = markerIdentifier
 
             var newBeacon = knownBeacons[0] as CLBeacon
 //            print(newBeacon.minor.integerValue-1)
@@ -154,6 +156,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
 
                 closestBeacon = knownBeacons[0] as CLBeacon
                 markerIdentifier = closestBeacon!.minor.integerValue - 1
+                marker = markerIdentifier
                 
                 if isConnectedToNetwork() {
                 
@@ -210,6 +213,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
 
                                         }
                                     }
+                                    self.trailMarkers[markerIdentifier].trailActivities = self.activities
                                     
                                     self.activitiesCollectionView.reloadData()
                                     
@@ -294,17 +298,19 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
 //        print("LNASIFNLISANFLINASF \(activities!)")
-        if activities == nil {
+        if trailMarkers[marker].trailActivities == nil {
             return 0
         } else {
-            return activities!.count
+            return trailMarkers[marker].trailActivities!.count
         }
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var cell = collectionView.dequeueReusableCellWithReuseIdentifier("activityIcon", forIndexPath: indexPath) as! ActivitiesCollectionViewCell
         
-        cell.activityIcon.image = UIImage(named: String(UTF8String: activities![indexPath.row])!)
+//        cell.activityIcon.image = UIImage(named: String(UTF8String: activities![indexPath.row])!)
+        cell.activityIcon.image = UIImage(named: String(UTF8String: trailMarkers[marker].trailActivities![indexPath.row])!)
+
         
         cell.activityBack.layer.cornerRadius = cell.activityBack.frame.width / 4
         
@@ -335,6 +341,7 @@ class TrailMarker {
     var conditionColor: String?
     var summary: String?
     var markerLocation: CLLocation?
+    var trailActivities: [String]?
     
     init(name: String, loop: String, number: Int, difficulty: String, summaryText: String) {
 
