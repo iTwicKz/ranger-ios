@@ -14,7 +14,7 @@ import Foundation
 import SystemConfiguration
 
 
-class RangerViewController: UIViewController, CLLocationManagerDelegate {
+class RangerViewController: UIViewController, CLLocationManagerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var trailNameLabel: UILabel!
@@ -28,26 +28,32 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var loopLabel: UILabel!
     @IBOutlet weak var conditionView: UIView!
     @IBOutlet weak var conditionIcon: UIImageView!
+    @IBOutlet weak var activitiesCollectionView: UICollectionView!
+    
     
     var trailAttributes: NSDictionary?
     
     let locationManager = CLLocationManager()
     
     var closestBeacon: CLBeacon?
+    var activities: [String]?
     
     var trailMarkers: [TrailMarker] =
         [TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
          TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
          TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
-         TrailMarker(name: "Aucilla River Paddling Trail", loop:"", number: 4, difficulty: "", summaryText: "Wow how cool is that thing")]
+         TrailMarker(name: "St Marks Trail", loop:"", number: 4, difficulty: "", summaryText: "Wow how cool is that thing")]
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         locationManager.delegate = self
+        activitiesCollectionView.delegate = self
+        activitiesCollectionView.dataSource = self
         
-//        let region = CLBeaconRegion(proximityUUID: NSU, identifier: <#T##String#>)
+        self.activitiesCollectionView.pagingEnabled = true
+        self.activitiesCollectionView.showsHorizontalScrollIndicator = false
         
         let region = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: "98230120-9182-0971-2497-102947102974")!, identifier: "Gimbal")
         
@@ -56,7 +62,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.requestWhenInUseAuthorization()
         }
         
-        conditionView.layer.cornerRadius = conditionView.frame.height / 2
+        conditionView.layer.cornerRadius = conditionView.frame.width / 5
         conditionIcon.tintColor = UIColor.whiteColor()
         
         
@@ -142,16 +148,12 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
             var markerIdentifier = closestBeacon!.minor.integerValue - 1
 
             var newBeacon = knownBeacons[0] as CLBeacon
-            print(newBeacon.minor.integerValue-1)
-            print(markerIdentifier)
+//            print(newBeacon.minor.integerValue-1)
+//            print(markerIdentifier)
             if(newBeacon.minor.integerValue-1 != markerIdentifier || first) {
 
                 closestBeacon = knownBeacons[0] as CLBeacon
                 markerIdentifier = closestBeacon!.minor.integerValue - 1
-
-    //            print("Beacons \(knownBeacons)")
-    //            print("Major value \(closestBeacon.major.integerValue)")
-    //            print("Minor value \(closestBeacon.minor.integerValue)")
                 
                 if isConnectedToNetwork() {
                 
@@ -195,7 +197,23 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
                                     print("LKNASD \(self.trailAttributes!["TRAILSURFACE"])")
                                     print(self.trailAttributes!["DIFFICULTY"])
                                     print(self.trailAttributes)
+                                    self.activities = nil
+                                    for (attribute, data) in self.trailAttributes! {
 
+                                        if String(data) == "Yes" {
+                                            if self.activities != nil && String(attribute) != "TRAILHEADS" {
+                                                self.activities?.append(
+                                                String(attribute))
+                                            } else if String(attribute) != "TRAILHEADS" {
+                                                self.activities = [String(attribute)]
+                                            }
+
+                                        }
+                                    }
+                                    
+                                    self.activitiesCollectionView.reloadData()
+                                    
+                                    
                                     
                                 } else {
                                     print("Failed")
@@ -205,11 +223,9 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
                                 print("Error with the JSON")
                             }
                             print("Everyone is fine, file downloaded successfully.")
+                            self.activitiesCollectionView.reloadData()
                         }
-                        
-                        
                     }
-                    
                     task.resume()
                     print("FINISHED")
                 }
@@ -217,26 +233,37 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
                 trailNameLabel.text =  trailMarkers[markerIdentifier].trailName
                 markerNumberLabel.text = String(trailMarkers[markerIdentifier].markerNumber!)
                 summaryLabel.text = trailMarkers[markerIdentifier].summary
-  
                 
                 sensorDataLabel.text = "Minor value \(closestBeacon!.minor.integerValue)"
+                self.activitiesCollectionView.reloadData()
+
             }
             
             //trailAttributes Updates
             trailDifficulty.text = String(trailMarkers[markerIdentifier].trailDifficulty!)
             loopLabel.text = String(trailMarkers[markerIdentifier].loopName!)
             parkLabel.text = String(trailMarkers[markerIdentifier].parkName!)
-            print(trailMarkers[markerIdentifier].conditionColor!)
             switch trailMarkers[markerIdentifier].conditionColor! {
             case "Water":
-                conditionView.backgroundColor = UIColor(red:0.09, green:0.7, blue:0.43, alpha:1.0)
+                conditionView.backgroundColor = UIColor(red:0.23, green:0.43, blue:0.73, alpha:1.0)
                 conditionIcon.image = UIImage(named: "anchor")
+                conditionIcon.image = conditionIcon.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                conditionIcon.tintColor = UIColor.whiteColor()
             case "Unpaved":
-                conditionView.backgroundColor = UIColor.greenColor()
+                conditionView.backgroundColor = UIColor(red:0.09, green:0.7, blue:0.43, alpha:1.0)
                 conditionIcon.image = UIImage(named: "leaf")
+                conditionIcon.image = conditionIcon.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                conditionIcon.tintColor = UIColor.whiteColor()
+            case "Paved":
+                conditionView.backgroundColor = UIColor.lightGrayColor()
+                conditionIcon.image = UIImage(named: "road")
+                conditionIcon.image = conditionIcon.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                conditionIcon.tintColor = UIColor.whiteColor()
+
             default:
                 print("ya")
             }
+            self.activitiesCollectionView.reloadData()
 
 
         }
@@ -262,6 +289,27 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate {
         
         return isReachable && !needsConnection
         
+    }
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+//        print("LNASIFNLISANFLINASF \(activities!)")
+        if activities == nil {
+            return 0
+        } else {
+            return activities!.count
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        var cell = collectionView.dequeueReusableCellWithReuseIdentifier("activityIcon", forIndexPath: indexPath) as! ActivitiesCollectionViewCell
+        
+        cell.activityIcon.image = UIImage(named: String(UTF8String: activities![indexPath.row])!)
+        
+        cell.activityBack.layer.cornerRadius = cell.activityBack.frame.width / 4
+        
+        
+        return cell
     }
     
 
