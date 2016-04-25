@@ -48,6 +48,7 @@ class ActivitiesDetailsViewController: UIViewController, UITableViewDelegate, UI
         cell.imageDetail.image = UIImage(named: passedList![indexPath.row])
         
         cell.imageBack.layer.cornerRadius = cell.imageBack.frame.width / 4
+        cell.imageBack.backgroundColor = UIColor(red:0.71, green:0.79, blue:0.51, alpha:1.0)
         
         return cell
     }

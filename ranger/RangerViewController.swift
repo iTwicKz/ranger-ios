@@ -14,12 +14,13 @@ import Foundation
 import SystemConfiguration
 
 
-class RangerViewController: UIViewController, CLLocationManagerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
+class RangerViewController: UIViewController, CLLocationManagerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var trailNameLabel: UILabel!
     
-    @IBOutlet weak var sensorDataLabel: UILabel!
+    @IBOutlet weak var phoneLabel: UIButton!
+//    @IBOutlet weak var sensorDataLabel: UILabel!
     @IBOutlet weak var markerNumberLabel: UILabel!
     @IBOutlet weak var trailDifficulty: UILabel!
     
@@ -40,10 +41,10 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
     var marker: Int = 0
     
     var trailMarkers: [TrailMarker] =
-        [TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
-         TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
-         TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there"),
-         TrailMarker(name: "St Marks Trail", loop:"", number: 4, difficulty: "", summaryText: "Wow how cool is that thing")]
+        [TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there", choice: 0),
+         TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Dang what a dope tree there", choice: 0),
+         TrailMarker(name: "Lafayette Heritage Trail", loop:"East Shared-Use", number: 3, difficulty: "", summaryText: "Lafayette Heritage Trail Park, along with adjacent Tom Brown Park, is bounded on the north by the Lake Lafayette system, stretching from Weems Road to Chaires Cross Road. The park offers visitors a place to fish, exercise, recreate, bicycle, run, walk or just sit and reflect. There are many scenic views and opportunities to view the wildlife. The park entrance is found at the east end of Heritage Park Blvd. in the Piney Z Plantation subdivision. There you will find a small parking lot with 3 picnic shelters, a trailhead and bike wash, a small playground, and restroom. Drinking water is provided at the trailhead and at the playground.", choice: 1),
+         TrailMarker(name: "St Marks Trail", loop:"", number: 4, difficulty: "", summaryText: "St. Marks trail is one of the longest trails in Tallahassee, totaling in about 20 miles! It is a paved surface that is often used by cyclists as an option for long rides, since it is paved but away from cars. The trail, if carried on leads to the St. Marks lighthouse down by the south bay in Wakulla county. The most popular place is the main trailhead, which has bathrooms, water fountains, and benches. The route passes by many cool places such as a used goods emporium and a few parks.", choice: 0)]
     
 
     override func viewDidLoad() {
@@ -52,6 +53,12 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
         locationManager.delegate = self
         activitiesCollectionView.delegate = self
         activitiesCollectionView.dataSource = self
+        
+        mapView.delegate = self
+        
+        phoneLabel.backgroundColor = UIColor(red:0.54, green:0.64, blue:0.33, alpha:1.0)
+
+        phoneLabel.layer.cornerRadius = phoneLabel.frame.height / 4
         
         self.activitiesCollectionView.pagingEnabled = true
         self.activitiesCollectionView.showsHorizontalScrollIndicator = false
@@ -68,68 +75,21 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
         
         
         locationManager.startRangingBeaconsInRegion(region)
+        
+        navigationController!.navigationBar.barTintColor = UIColor(red:0.71, green:0.79, blue:0.51, alpha:1.0)
+
+
+        //        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Avenir", size: 17)!,  NSForegroundColorAttributeName: UIColor.whiteColor()]
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 50, width: 50, height: 50))
+        imageView.contentMode = .ScaleAspectFit
+        let image = UIImage(named: "face")
+        imageView.image = image
+        navigationItem.titleView = imageView
 
 
         // Do any additional setup after loading the view.
     }
     
-    func updateIP(trailName: String, loopName: String) -> NSDictionary {
-        
-        // Setup the session to make REST GET call.  Notice the URL is https NOT http!!
-        let loopString: String
-        let postEndpoint: NSURL
-        
-        let trailString = trailName.stringByReplacingOccurrencesOfString(" ", withString: "+")
-
-        if loopName != "" {
-            print("No null here")
-            loopString = loopName.stringByReplacingOccurrencesOfString(" ", withString: "+")
-            postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27%3B++Loopname%3D%\(loopString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
-        } else {
-            print("Went with the null")
-            loopString = "Main Path"
-            postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
-        }
-        
-        var trailAttributes: NSDictionary = ["DIFFICULTY" : "A+MESS", "Dictionary": "Collection"]
-        
-        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: postEndpoint)
-        let session = NSURLSession.sharedSession()
-
-        
-        let task = session.dataTaskWithRequest(urlRequest, completionHandler: {
-            (data, response, error) -> Void in
-            
-            let httpResponse = response as! NSHTTPURLResponse
-            let statusCode = httpResponse.statusCode
-            
-            if (statusCode == 200) {
-                do {
-                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options:.AllowFragments)
-
-                    if let trails = json["features"] as? [NSDictionary] {
-                        trailAttributes = trails[0]["attributes"] as! NSDictionary
-//                        print(trailAttributes["TRAILNAME"]!)
-                        
-                    } else {
-                        print("Failed")
-                    }
-
-                } catch {
-                    print("Error with the JSON")
-                }
-                print("Everyone is fine, file downloaded successfully.")
-            }
-        
-        
-        })
-    
-        task.resume()
-        print("FINISHED")
-        print(trailAttributes)
-        
-        return trailAttributes
-    }
 
 
     override func didReceiveMemoryWarning() {
@@ -165,7 +125,10 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                     var trailName = trailMarkers[markerIdentifier].trailName!
                     var loopName = trailMarkers[markerIdentifier].loopName
                     
-                    
+                    if loopName == "Main Path"{
+                        print("GEARLIAENILNTIANT")
+                        loopName = ""
+                    }
                     let loopString: String
                     let postEndpoint: NSURL
                     
@@ -174,13 +137,20 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                     if loopName != "" {
                         print("Loooopname \(loopName)")
                         loopString = loopName!.stringByReplacingOccurrencesOfString(" ", withString: "+")
-                        postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27%3B++Loopname%3D%\(loopString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
+                        postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Loopname%3D%27\(loopString)%27%3B+Trailname+%3D+%27\(trailString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=%7B'wkid'%3A+4326%7D&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
+                            
+                            
+                        
                     } else {
                         trailMarkers[markerIdentifier].loopName = "Main Path"
                         print("JIJISJd")
                         loopString = "Main Path"
-                        postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
+                        postEndpoint = NSURL(string:"http://tlcdomi.leoncountyfl.gov/arcgis/rest/services/MapServices/TLCDOMI_FeatureAccess_Trailahassee_D_WM/MapServer/3/query?where=Trailname%3D%27\(trailString)%27&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=%7B'wkid'%3A+4326%7D&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson")!
                     }
+                    
+                    
+                    
+                    print(postEndpoint)
                     
                     let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: postEndpoint)
                     let session = NSURLSession.sharedSession()
@@ -197,14 +167,19 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                                 let json = try NSJSONSerialization.JSONObjectWithData(data!, options:.AllowFragments)
                                 
                                 if let trails = json["features"] as? [NSDictionary] {
-                                    self.trailAttributes = trails[0]["attributes"] as? NSDictionary
+                            //get attributes of the trail
+                                    var trailID = self.trailMarkers[markerIdentifier].trailChoice
+                                    
+                                    self.trailAttributes = trails[trailID!]["attributes"] as? NSDictionary
                                     //                        print(trailAttributes["TRAILNAME"]!)
                                     self.trailMarkers[markerIdentifier].trailDifficulty = self.trailAttributes!["DIFFICULTY"] as! String
                                     self.trailMarkers[markerIdentifier].parkName = self.trailAttributes!["PARKNAME"] as! String
                                     self.trailMarkers[markerIdentifier].conditionColor = self.trailAttributes!["TRAILSURFACE"] as! String
+                                    self.trailMarkers[markerIdentifier].phoneNumber = self.trailAttributes!["CONTACTPHNUM"] as! String
                                     print("LKNASD \(self.trailAttributes!["TRAILSURFACE"])")
                                     print(self.trailAttributes!["DIFFICULTY"])
                                     print(self.trailAttributes)
+                                    
                                     self.activities = nil
                                     for (attribute, data) in self.trailAttributes! {
 
@@ -221,6 +196,18 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                                     self.trailMarkers[markerIdentifier].trailActivities = self.activities
                                     
                                     self.activitiesCollectionView.reloadData()
+                                    
+                                //get trail points
+                                    var paths = trails[trailID!]["geometry"]!["paths"] as! [[NSMutableArray]]
+                                    self.trailMarkers[markerIdentifier].trailCoordinates = paths
+//                                    print(pointSet[0]
+                                    var latitude = (paths[paths.count/2][0][1]).doubleValue
+                                    var longitude = (paths[paths.count/2][0][0]).doubleValue
+                                    
+                                    let span = MKCoordinateSpanMake(0.07, 0.07)
+                                    let region1 = MKCoordinateRegion(center: CLLocationCoordinate2DMake(latitude, longitude), span: span)
+                                    self.mapView.setRegion(region1, animated: true)
+                                    
                                     
                                     
                                     
@@ -243,7 +230,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                 markerNumberLabel.text = String(trailMarkers[markerIdentifier].markerNumber!)
                 summaryLabel.text = trailMarkers[markerIdentifier].summary
                 
-                sensorDataLabel.text = "Minor value \(closestBeacon!.minor.integerValue)"
+//                sensorDataLabel.text = "Minor value \(closestBeacon!.minor.integerValue)"
                 self.activitiesCollectionView.reloadData()
 
             }
@@ -252,6 +239,27 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
             trailDifficulty.text = String(trailMarkers[markerIdentifier].trailDifficulty!)
             loopLabel.text = String(trailMarkers[markerIdentifier].loopName!)
             parkLabel.text = String(trailMarkers[markerIdentifier].parkName!)
+            
+            
+            
+//            var paths = trails[0]["geometry"]!["paths"] as! [[NSMutableArray]]
+//            self.trailMarkers[markerIdentifier].trailCoordinates = paths
+            //                                    print(pointSet[0]
+            if self.trailMarkers[markerIdentifier].trailCoordinates != nil {
+                var pathsNew = self.trailMarkers[markerIdentifier].trailCoordinates
+                var latitude = (pathsNew![pathsNew!.count/2][0][1]).doubleValue
+                var longitude = (pathsNew![pathsNew!.count/2][0][0]).doubleValue
+                
+                let span = MKCoordinateSpanMake(0.07, 0.07)
+                let region1 = MKCoordinateRegion(center: CLLocationCoordinate2DMake(latitude, longitude), span: span)
+                self.mapView.setRegion(region1, animated: true)
+            }
+            
+            
+//            phoneLabel. = "Call Manager \(String(trailMarkers[markerIdentifier].phoneNumber!))"
+            
+            
+            
             switch trailMarkers[markerIdentifier].conditionColor! {
             case "Water":
                 conditionView.backgroundColor = UIColor(red:0.23, green:0.43, blue:0.73, alpha:1.0)
@@ -264,7 +272,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                 conditionIcon.image = conditionIcon.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
                 conditionIcon.tintColor = UIColor.whiteColor()
             case "Paved":
-                conditionView.backgroundColor = UIColor.lightGrayColor()
+                conditionView.backgroundColor = UIColor(red:0.57, green:0.69, blue:1.0, alpha:1.0)
                 conditionIcon.image = UIImage(named: "road")
                 conditionIcon.image = conditionIcon.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
                 conditionIcon.tintColor = UIColor.whiteColor()
@@ -273,10 +281,64 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
                 print("ya")
             }
             self.activitiesCollectionView.reloadData()
+            
+            if trailMarkers[marker].trailCoordinates != nil {
+                var paths = trailMarkers[marker].trailCoordinates
+                var latitude = (paths![0][0][1]).doubleValue
+                var longitude = (paths![0][0][0]).doubleValue
+                
+                
+                
+                //inasifnasinfinaslifnasionfoiZNC
+                var pointArray: [CLLocationCoordinate2D] = []
+                for index in 0...(paths!.count-1) {
+                    for point in paths![index] {
+                        var latitude = point[1].doubleValue
+                        var longitude = point[0].doubleValue
+                        
+                        pointArray.append(CLLocationCoordinate2DMake(latitude, longitude))
+                    }
+                    //                                    var point1 = CLLocationCoordinate2DMake(-73.761105, 41.017791);
+                    //                                    var point2 = CLLocationCoordinate2DMake(-73.760701, 41.019348);
+                    //                                    var point3 = CLLocationCoordinate2DMake(-73.757201, 41.019267);
+                    //                                    var point4 = CLLocationCoordinate2DMake(-73.757482, 41.016375);
+                    //                                    var point5 = CLLocationCoordinate2DMake(-73.761105, 41.017791);
+                    
+                    //                                    var points: [CLLocationCoordinate2D]
+                    //                                    points = [point1, point2, point3, point4, point5]
+                    
+//                    print(pointArray)
+                    var geodesic = MKPolyline(coordinates: &pointArray[0], count: pointArray.count)
+                    self.mapView.addOverlay(geodesic)
+                }
+                
+                
+                //                                    UIView.animateWithDuration(1.5, animations: { () -> Void in
+                
+                //                                    })
+                
 
-
+            }
+            
         }
     }
+    
+    func addingPaths(){
+        
+    }
+    
+    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
+        
+        if overlay is MKPolyline {
+            var polylineRenderer = MKPolylineRenderer(overlay: overlay)
+            polylineRenderer.strokeColor = UIColor(red:0.35, green:0.76, blue:1.0, alpha:1.0)
+
+            polylineRenderer.lineWidth = 4
+            return polylineRenderer
+        }
+        return nil
+    }
+    
     
     func isConnectedToNetwork() -> Bool {
         
@@ -318,6 +380,7 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
 
         
         cell.activityBack.layer.cornerRadius = cell.activityBack.frame.width / 4
+        cell.activityBack.backgroundColor = UIColor(red:0.71, green:0.79, blue:0.51, alpha:1.0)
         
         
         return cell
@@ -336,6 +399,14 @@ class RangerViewController: UIViewController, CLLocationManagerDelegate, UIColle
         
     }
 
+    @IBAction func callingManager(sender: AnyObject) {
+        var phoneNumber = trailMarkers[marker].phoneNumber
+        let phoneString = phoneNumber!.stringByReplacingOccurrencesOfString("-", withString: "")
+
+        print(phoneString)
+        var url:NSURL = NSURL(string: "tel://\(phoneString)")!
+        UIApplication.sharedApplication().openURL(url)
+    }
 }
 
 class TrailMarker {
@@ -349,10 +420,11 @@ class TrailMarker {
     var summary: String?
     var markerLocation: CLLocation?
     var trailActivities: [String]?
+    var trailCoordinates: [[NSMutableArray]]?
+    var trailChoice: Int?
+    var phoneNumber: String?
     
-    init(name: String, loop: String, number: Int, difficulty: String, summaryText: String) {
-
-
+    init(name: String, loop: String, number: Int, difficulty: String, summaryText: String, choice: Int) {
         trailName = name
         loopName = loop
         parkName = ""
@@ -362,5 +434,6 @@ class TrailMarker {
         trailColor = UIColor(red:0.09, green:0.7, blue:0.43, alpha:1.0)
         conditionColor = "None"
         markerLocation = CLLocation(latitude: 30.434137, longitude: -84.290607)
+        trailChoice = choice
     }
 }
